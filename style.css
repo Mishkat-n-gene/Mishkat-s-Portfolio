@@ -213,13 +213,20 @@ a:hover {
 #toc {
   position: fixed;
   left: 2rem;
-  top: 20vh;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
   z-index: 20;
   font-size: 0.78rem;
   color: var(--ink-muted);
+  padding: 1.2rem 1.4rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
+  align-items: flex-start;
 }
 
 .toc-item {
