@@ -1,0 +1,16 @@
+body {
+  letter-spacing: 0.01em;
+}
+
+.page.alt .section-title {
+  color: #2a2a2a;
+}
+
+.page.alt .course-col {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.hero-page .nav-arrow,
+.hero-page #page-dots {
+  mix-blend-mode: screen;
+}
