@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mishkat Noor — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+:root{
+  --sw:240px;
+  --bg:#f7f5f2;
+  --ink:#1c1917;
+  --mid:#6b6560;
+  --line:#ddd9d4;
+  --accent:#b5a48a;
+  --white:#ffffff;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Jost',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;display:flex;min-height:100vh;cursor:none}
+.cur-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-50%)}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(28,25,23,.4);border-radius:50%;position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+.cur-ring.big{width:56px;height:56px;border-color:var(--accent)} 
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:100;padding:2.4rem 0;overflow-y:auto}
+.sidebar-name{font-family:var(--serif);font-size:1.05rem;font-weight:500;letter-spacing:.02em;color:var(--ink);text-decoration:none;padding:0 2rem 2rem;border-bottom:1px solid var(--line);display:block;line-height:1.35}
+.sidebar-name span{display:block;font-size:.62rem;font-family:var(--sans);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-top:.35rem}
+nav{padding:1.6rem 0;flex:1}
+nav a{display:block;padding:.55rem 2rem;font-size:.78rem;font-weight:400;letter-spacing:.03em;color:var(--mid);text-decoration:none;transition:color .25s,padding-left .25s;position:relative}
+nav a::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:0;height:1px;background:var(--accent);transition:width .3s}
+nav a:hover{color:var(--ink);padding-left:2.5rem}
+nav a:hover::before{width:1.5rem}
+nav a.active{color:var(--ink);font-weight:500}
+.sidebar-contact-btn{margin:0 2rem;display:block;text-align:center;padding:.7rem 1rem;border:1px solid var(--line);font-size:.65rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:background .3s,color .3s,border-color .3s;cursor:none;background:none;font-family:var(--sans)}
+.sidebar-contact-btn:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:320px;gap:1.5rem}
+
+/* CARD SPANS */
+.card:nth-child(1){grid-column:span 2;grid-row:span 2}
+.card:nth-child(4){grid-column:span 2}
+.card:nth-child(7){grid-column:span 2}
+.card:nth-child(11){grid-column:span 2}
+.card:nth-child(13){grid-column:span 3}
+
+/* CARD */
+.card{position:relative;overflow:hidden;display:block;text-decoration:none;cursor:none;opacity:0;transform:translateY(20px);animation:cardIn .7s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.12s}.card:nth-child(3){animation-delay:.18s}.card:nth-child(4){animation-delay:.22s}.card:nth-child(5){animation-delay:.28s}.card:nth-child(6){animation-delay:.32s}.card:nth-child(7){animation-delay:.38s}.card:nth-child(8){animation-delay:.42s}.card:nth-child(9){animation-delay:.48s}.card:nth-child(10){animation-delay:.52s}.card:nth-child(11){animation-delay:.56s}.card:nth-child(12){animation-delay:.60s}.card:nth-child(13){animation-delay:.64s}
+.card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .9s cubic-bezier(.25,.46,.45,.94)}
+.card:hover .card-bg{transform:scale(1.06)}
+.card-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(10,8,6,.6) 100%);transition:opacity .4s}
+.card:hover .card-overlay{opacity:.88}
+.card-body{position:absolute;bottom:0;left:0;right:0;padding:1.6rem 1.8rem;transform:translateY(4px);transition:transform .4s}
+.card:hover .card-body{transform:translateY(0)}
+.card-label{font-size:.58rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;opacity:0;transform:translateY(6px);transition:opacity .35s .05s,transform .35s .05s}
+.card:hover .card-label{opacity:1;transform:translateY(0)}
+.card-title{font-family:var(--serif);font-size:clamp(1rem,1.5vw,1.45rem);font-weight:400;color:#fff;line-height:1.25}
+.card-credit{position:absolute;bottom:.6rem;right:1rem;font-size:.56rem;color:rgba(255,255,255,.3);letter-spacing:.08em;opacity:0;transition:opacity .4s}
+.card:hover .card-credit{opacity:1}
+
+/* BG GRADIENTS */
+.bg-1{background-image:url('blacked.jpg');background-size:cover;background-position:center 20%}
+.bg-2{background:linear-gradient(135deg,#0f1a20 0%,#1e3545 40%,#335570 70%,#4d7a95 100%)}
+.bg-3{background:linear-gradient(155deg,#1a150f 0%,#352a1a 40%,#5c4830 70%,#8c7050 100%)}
+.bg-4{background:linear-gradient(135deg,#101a10 0%,#1e3520 40%,#355530 70%,#557048 100%)}
+.bg-5{background:linear-gradient(145deg,#1a1020 0%,#352040 40%,#553560 70%,#7a5585 100%)}
+.bg-6{background:linear-gradient(135deg,#1a0f0a 0%,#3d2015 40%,#6b3a28 70%,#9a5840 100%)}
+.bg-7{background:linear-gradient(145deg,#0a1520 0%,#152838 40%,#254060 70%,#3d6080 100%)}
+.bg-8{background:linear-gradient(135deg,#201a10 0%,#40351a 40%,#685530 70%,#9a8050 100%)}
+.bg-9{background:linear-gradient(155deg,#1a1a1a 0%,#303030 40%,#505050 70%,#757575 100%)}
+.bg-10{background:linear-gradient(135deg,#0d1a15 0%,#1a3028 40%,#2e5040 70%,#487060 100%)}
+.bg-11{background:linear-gradient(145deg,#1c1014 0%,#381824 40%,#602840 70%,#905060 100%)}
+.bg-12{background:linear-gradient(135deg,#10100d 0%,#201e16 40%,#352e20 70%,#504530 100%)}
+.bg-13{background:linear-gradient(135deg,#121520 0%,#202540 40%,#303860 70%,#455280 100%)}
+
+/* CONTACT PANEL */
+.contact-overlay{position:fixed;inset:0;background:rgba(10,8,6,.55);z-index:500;opacity:0;pointer-events:none;transition:opacity .45s;backdrop-filter:blur(4px)}
+.contact-overlay.open{opacity:1;pointer-events:all}
+.contact-panel{position:fixed;top:0;right:0;width:480px;max-width:100%;height:100vh;background:var(--white);z-index:501;padding:3.5rem 3rem;transform:translateX(100%);transition:transform .5s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.contact-panel.open{transform:translateX(0)}
+.contact-close{position:absolute;top:1.8rem;right:2rem;background:none;border:none;font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);cursor:none;transition:color .3s}
+.contact-close:hover{color:var(--ink)}
+.contact-heading{font-family:var(--serif);font-size:2.2rem;font-weight:400;color:var(--ink);line-height:1.15;margin-bottom:.7rem;margin-top:.5rem}
+.contact-heading em{font-style:italic;color:var(--accent)}
+.contact-sub{font-size:.82rem;color:var(--mid);margin-bottom:2.5rem;line-height:1.7}
+.contact-form{display:flex;flex-direction:column;gap:1.8rem;flex:1}
+.f-group{position:relative}
+.f-group label{display:block;font-size:.58rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem;transition:color .3s}
+.f-group:focus-within label{color:var(--ink)}
+.f-group input,.f-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:.55rem 0;font-family:var(--sans);font-size:.9rem;font-weight:300;color:var(--ink);outline:none;resize:none;transition:border-color .35s}
+.f-group input:focus,.f-group textarea:focus{border-bottom-color:var(--ink)}
+.f-line{position:absolute;bottom:0;left:0;height:1px;width:0;background:var(--ink);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.f-group:focus-within .f-line{width:100%}
+.contact-send{display:inline-flex;align-items:center;gap:.8rem;background:var(--ink);color:var(--white);border:none;padding:1rem 2rem;font-family:var(--sans);font-size:.65rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;cursor:none;align-self:flex-start;position:relative;overflow:hidden;transition:color .4s}
+.contact-send::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.contact-send:hover::before{transform:translateX(0)}
+.contact-send:hover{color:var(--ink)}
+.contact-send span,.contact-send .arr{position:relative;z-index:1}
+.contact-success{display:none;font-family:var(--serif);font-size:1.3rem;color:var(--ink);text-align:center;padding:2rem 0;font-style:italic}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:1.2rem;left:1.2rem;z-index:200;background:var(--white);border:1px solid var(--line);width:38px;height:38px;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:none;padding:9px}
+.hamburger span{display:block;width:100%;height:1px;background:var(--ink)}
+
+@media(max-width:860px){
+  body{cursor:auto}
+  .cur-dot,.cur-ring{display:none}
+  .sidebar{transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:300}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .main{margin-left:0}
+  .grid{grid-template-columns:1fr 1fr;grid-auto-rows:240px}
+  .card:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .card:nth-child(4){grid-column:span 1}
+  .card:nth-child(7){grid-column:span 2}
+  .card:nth-child(11){grid-column:span 1}
+  .card:nth-child(13){grid-column:span 2}
+  .contact-panel{width:100%}
+}
+@media(max-width:520px){
+  .grid{grid-template-columns:1fr;grid-auto-rows:220px}
+  .card{grid-column:span 1 !important;grid-row:span 1 !important}
+}
+</style>
+</head>
+<body>
+
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a class="sidebar-name" href="#">
+    Mishkat Noor
+    <span>Portfolio</span>
+  </a>
+  <nav>
+    <a href="portfolio.html" class="active">Home</a>
+    <a href="about-me.html">About Me</a>
+    <a href="resume.html">Resume</a>
+  </nav>
+  <button class="sidebar-contact-btn" onclick="openContact()">Contact</button>
+</aside>
+
+<!-- MAIN GRID -->
+<main class="main">
+  <div class="grid">
+
+    <a class="card" href="about-me-card.html">
+      <div class="card-bg bg-1"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Featured</p>
+        <h2 class="card-title">About Me</h2>
+      </div>
+    </a>
+
+    <a class="card" href="academic-coursework.html">
+      <div class="card-bg bg-2"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Video</p>
+        <h2 class="card-title">Academic Coursework</h2>
+      </div>
+    </a>
+
+    <a class="card" href="academic-projects.html">
+      <div class="card-bg bg-3"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Work</p>
+        <h2 class="card-title">Academic Projects</h2>
+      </div>
+      <div class="card-credit">Expertise: Nextflow, SLURM, Singularity, Deep Learning</div>
+    </a>
+
+    <a class="card" href="skills.html">
+      <div class="card-bg bg-4"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Speaking</p>
+        <h2 class="card-title">Skills</h2>
+      </div>
+    </a>
+
+    <a class="card" href="certificates.html">
+      <div class="card-bg bg-5"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Booking</p>
+        <h2 class="card-title">Certificates</h2>
+      </div>
+    </a>
+
+    <a class="card" href="resume.html">
+      <div class="card-bg bg-6"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Writing</p>
+        <h2 class="card-title">Professional CV</h2>
+      </div>
+    </a>
+
+    <!-- PASSIONS AND HOBBIES SECTION HEADING -->
+    <div style="grid-column: span 3; padding: 2rem 0; display: flex; align-items: center; gap: 1.5rem;">
+      <div style="flex: 1; height: 1px; background: var(--line);"></div>
+      <h2 style="font-family: var(--serif); font-size: 1.8rem; font-weight: 400; color: var(--ink); white-space: nowrap; letter-spacing: .02em;">Passions & Hobbies</h2>
+      <div style="flex: 1; height: 1px; background: var(--line);"></div>
+    </div>
+
+    <!-- STORY-TELLING (WRITING PORTFOLIO) -->
+    <a class="card" href="storytelling.html">
+      <div class="card-bg bg-7"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Writing</p>
+        <h2 class="card-title">Storytelling, Poems & Prose</h2>
+      </div>
+    </a>
+
+    <!-- VISUAL EDITORIAL -->
+    <a class="card" href="visual-editorial.html">
+      <div class="card-bg bg-9"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <h2 class="card-title">Visual Editorial</h2>
+      </div>
+    </a>
+
+    <!-- CANVAS AND CHARCOALS -->
+    <a class="card" href="#">
+      <div class="card-bg bg-11"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Digital</p>
+        <h2 class="card-title">Canvas and Charcoals</h2>
+      </div>
+    </a>
+
+    <!-- EMBROIDERY -->
+    <a class="card" href="#">
+      <div class="card-bg bg-8"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Press</p>
+        <h2 class="card-title">Embroidery</h2>
+      </div>
+    </a>
+
+    <!-- FILM MAKING -->
+    <a class="card" href="filmmaking.html">
+      <div class="card-bg bg-12"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Film</p>
+        <h2 class="card-title">Film Making Projects</h2>
+      </div>
+    </a>
+
+    <!-- LEADERSHIP & EXTRACURRICULAR -->
+    <a class="card" href="#">
+      <div class="card-bg bg-13"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Document</p>
+        <h2 class="card-title">Leadership & Extracurricular</h2>
+      </div>
+    </a>
+
+    <!-- CONTACT ME - END OF ALL CARDS -->
+    <a class="card" href="#">
+      <div class="card-bg bg-10"></div>
+      <div class="card-overlay"></div>
+      <div class="card-body">
+        <p class="card-label">Connect</p>
+        <h2 class="card-title">Contact Me</h2>
+      </div>
+      <div style="position: absolute; bottom: 1.6rem; left: 1.8rem; right: 1.8rem; display: flex; gap: 1.5rem; justify-content: flex-start;">
+        <a href="https://instagram.com" target="_blank" style="color: #fff; font-size: 1.8rem; text-decoration: none; transition: transform 0.3s;">📷</a>
+        <a href="https://linkedin.com" target="_blank" style="color: #fff; font-size: 1.8rem; text-decoration: none; transition: transform 0.3s;">💼</a>
+        <a href="https://github.com" target="_blank" style="color: #fff; font-size: 1.8rem; text-decoration: none; transition: transform 0.3s;">💻</a>
+        <a href="mailto:mnoor.bsbi23sines@student.nust.edu.pk" style="color: #fff; font-size: 1.8rem; text-decoration: none; transition: transform 0.3s;">✉️</a>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<!-- CONTACT PANEL -->
+<div class="contact-overlay" id="contactOverlay" onclick="closeContact()"></div>
+<div class="contact-panel" id="contactPanel">
+  <button class="contact-close" onclick="closeContact()">&#10005; &nbsp;Close</button>
+  <h2 class="contact-heading">Let's<br><em>talk.</em></h2>
+  <p class="contact-sub">I'm Mishkat Noor, a BS Bioinformatics student at NUST with expertise in NGS, genome assembly, and AI/ML in bioinformatics. Feel free to reach out using the form below or contact me directly at mnoor.bsbi23sines@student.nust.edu.pk or +(92) 341-7789421.</p>
+  <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+    <div class="f-group">
+      <label>Name *</label>
+      <input type="text" placeholder="Your full name" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Email *</label>
+      <input type="email" placeholder="mnoor.bsbi23sines@student.nust.edu.pk" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Message *</label>
+      <textarea rows="5" placeholder="What would you like to say?" required></textarea>
+      <div class="f-line"></div>
+    </div>
+    <button type="submit" class="contact-send">
+      <span>Send</span>
+      <span class="arr">&#8594;</span>
+    </button>
+  </form>
+  <div class="contact-success" id="contactSuccess">Message successfully sent! &#10003;</div>
+</div>
+
+<script>
+// CURSOR
+const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+});
+
+// CONTACT
+function openContact(){document.getElementById('contactOverlay').classList.add('open');document.getElementById('contactPanel').classList.add('open');document.body.style.overflow='hidden'}
+function closeContact(){document.getElementById('contactOverlay').classList.remove('open');document.getElementById('contactPanel').classList.remove('open');document.body.style.overflow=''}
+function submitContact(e){
+  e.preventDefault();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('contactSuccess').style.display='block';
+  setTimeout(()=>{document.getElementById('contactForm').style.display='flex';document.getElementById('contactSuccess').style.display='none';document.getElementById('contactForm').reset();closeContact()},3000);
+}
+
+// MOBILE
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',function(){
+    document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
