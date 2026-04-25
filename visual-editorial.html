@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Editorial — Cosmos Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            /* Cosmos Colors & Theme */
+            --cosmos-bg: #111111;
+            --cosmos-card-bg: #1a1a1a;
+            --cosmos-text-primary: #ffffff;
+            --cosmos-text-secondary: #888888;
+            --cosmos-border: rgba(255, 255, 255, 0.08);
+            --cosmos-hover-border: rgba(255, 255, 255, 0.15);
+            --cosmos-accent: #333333;
+            --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --serif: 'Playfair Display', Georgia, serif;
+        }
+
+        body {
+            background-color: var(--cosmos-bg);
+            color: var(--cosmos-text-primary);
+            font-family: var(--sans);
+            font-weight: 300;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Cursor for Portfolio Continuity */
+        .cur-dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; position: fixed; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
+        .cur-ring { width: 30px; height: 30px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; position: fixed; z-index: 9998; pointer-events: none; transform: translate(-50%, -50%); transition: width .3s, height .3s, border-color .3s; }
+
+        header {
+            padding: 3rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--cosmos-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-nav {
+            text-decoration: none;
+            color: var(--cosmos-text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: color 0.2s;
+        }
+        .back-nav:hover { color: var(--cosmos-text-primary); }
+
+        .title-group h1 {
+            font-family: var(--serif);
+            font-size: 2.2rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+        }
+
+        /* Filter Navigation */
+        .filter-nav {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--cosmos-border);
+            padding: 4px;
+            border-radius: 50px;
+            gap: 4px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--cosmos-text-secondary);
+            padding: 0.6rem 1.4rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .filter-btn:hover {
+            color: var(--cosmos-text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--cosmos-card-bg);
+            color: var(--cosmos-text-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Cosmos Masonry Grid - Simplitied with columns */
+        .cosmos-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 2.5rem;
+            width: 100%;
+        }
+
+        @media (max-width: 1100px) {
+            .masonry-grid { column-count: 2; }
+        }
+        @media (max-width: 700px) {
+            .masonry-grid { column-count: 1; }
+        }
+
+        .grid-item {
+            break-inside: avoid;
+            margin-bottom: 2.5rem;
+            background: var(--cosmos-card-bg);
+            border: 1px solid var(--cosmos-border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+            position: relative;
+            display: block;
+        }
+
+        .grid-item.hidden {
+            display: none;
+        }
+
+        .grid-item:hover {
+            border-color: var(--cosmos-hover-border);
+            transform: translateY(-4px);
+        }
+
+        .grid-item img {
+            width: 100%;
+            display: block;
+            height: auto;
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* Football Vista Highlight */
+        .grid-item.highlight {
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--cosmos-hover-border);
+        }
+
+        .grid-item-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.2rem;
+            background: linear-gradient(to top, rgba(17,17,17,0.9) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-item:hover .grid-item-info {
+            opacity: 1;
+        }
+
+        .item-label {
+            font-size: 0.7rem;
+            color: var(--cosmos-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .item-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--cosmos-text-primary);
+        }
+
+        /* Modal / Preview inspired by Cosmos */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(15px);
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .modal-overlay.open { display: flex; opacity: 1; }
+
+        .modal-body {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 4rem;
+            max-height: 85vh;
+        }
+
+        @media (max-width: 1000px) {
+            .modal-body { 
+                grid-template-columns: 1fr; 
+                overflow-y: auto; 
+                max-height: 90vh;
+                gap: 2rem;
+            }
+        }
+
+        .modal-image-area {
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid var(--cosmos-border);
+            height: 100%;
+        }
+
+        .modal-image-area img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-content-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 1rem;
+        }
+
+        .modal-header h2 {
+            font-family: var(--serif);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        .metadata-section {
+            border-top: 1px solid var(--cosmos-border);
+            padding-top: 2rem;
+            margin-top: 2rem;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .meta-key { color: var(--cosmos-text-secondary); }
+        .meta-val { color: var(--cosmos-text-primary); font-weight: 400; }
+
+        .close-btn {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--cosmos-border);
+            color: #fff;
+            padding: 0.8rem 1.4rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            z-index: 1001;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--cosmos-hover-border); }
+
+    </style>
+</head>
+<body>
+
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<header>
+    <a href="portfolio.html" class="back-nav">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Portfolio
+    </a>
+    <div class="filter-nav">
+        <button class="filter-btn active" data-filter="nature">Nature</button>
+        <button class="filter-btn" data-filter="architecture">Architecture</button>
+        <button class="filter-btn" data-filter="people">People</button>
+    </div>
+    <div style="width: 100px;"></div> <!-- Balanced layout -->
+</header>
+
+<main class="cosmos-container">
+    <div class="masonry-grid" id="masonryGrid">
+        <!-- NATURE (18 items) -->
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 01', 'Nature collection image 01.', 'Nature Collection', 'Photography', 'nature/1.0.jpeg')">
+            <img src="nature/1.0.jpeg" alt="Nature 01">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">1.0</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 02', 'Nature collection image 02.', 'Nature Collection', 'Photography', 'nature/2.0.jpeg')">
+            <img src="nature/2.0.jpeg" alt="Nature 02">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">2.0</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 03', 'Nature collection image 03.', 'Nature Collection', 'Photography', 'nature/3.jpeg')">
+            <img src="nature/3.jpeg" alt="Nature 03">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">3</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 04', 'Nature collection image 04.', 'Nature Collection', 'Photography', 'nature/4.jpeg')">
+            <img src="nature/4.jpeg" alt="Nature 04">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">4</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 05', 'Nature collection image 05.', 'Nature Collection', 'Photography', 'nature/5.jpeg')">
+            <img src="nature/5.jpeg" alt="Nature 05">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">5</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 06', 'Nature collection image 06.', 'Nature Collection', 'Photography', 'nature/6.jpeg')">
+            <img src="nature/6.jpeg" alt="Nature 06">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">6</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 07', 'Nature collection image 07.', 'Nature Collection', 'Photography', 'nature/7.jpeg')">
+            <img src="nature/7.jpeg" alt="Nature 07">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">7</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 08', 'Nature collection image 08.', 'Nature Collection', 'Photography', 'nature/8.jpeg')">
+            <img src="nature/8.jpeg" alt="Nature 08">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">8</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 09', 'Nature collection image 09.', 'Nature Collection', 'Photography', 'nature/9.jpeg')">
+            <img src="nature/9.jpeg" alt="Nature 09">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">9</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 10', 'Nature collection image 10.', 'Nature Collection', 'Photography', 'nature/10.JPG')">
+            <img src="nature/10.JPG" alt="Nature 10">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">10</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 11', 'Nature collection image 11.', 'Nature Collection', 'Photography', 'nature/11.JPG')">
+            <img src="nature/11.JPG" alt="Nature 11">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">11</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 12', 'Nature collection image 12.', 'Nature Collection', 'Photography', 'nature/12.JPG')">
+            <img src="nature/12.JPG" alt="Nature 12">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">12</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 13', 'Nature collection image 13.', 'Nature Collection', 'Photography', 'nature/13.JPG')">
+            <img src="nature/13.JPG" alt="Nature 13">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">13</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 14', 'Nature collection image 14.', 'Nature Collection', 'Photography', 'nature/14.JPG')">
+            <img src="nature/14.JPG" alt="Nature 14">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">14</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 15', 'Nature collection image 15.', 'Nature Collection', 'Photography', 'nature/15.JPG')">
+            <img src="nature/15.JPG" alt="Nature 15">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">15</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 16', 'Nature collection image 16.', 'Nature Collection', 'Photography', 'nature/16.jpg')">
+            <img src="nature/16.jpg" alt="Nature 16">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">16</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 17', 'Nature collection image 17.', 'Nature Collection', 'Photography', 'nature/17.jpg')">
+            <img src="nature/17.jpg" alt="Nature 17">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">17</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="nature" onclick="openCosmosModal('Nature 18', 'Nature collection image 18.', 'Nature Collection', 'Photography', 'nature/18.jpg')">
+            <img src="nature/18.jpg" alt="Nature 18">
+            <div class="grid-item-info">
+                <span class="item-label">Nature</span>
+                <span class="item-title">18</span>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE (10 items) -->
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('An iot bulb just like my heart it glows different for different moods.', 'Architecture image 1.', 'Architecture Collection', 'Photography', 'architecture/1.jpeg')">
+            <img src="architecture/1.jpeg" alt="Architecture 01">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">An iot bulb just like my heart it glows different for different moods.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Sharp edges in hostel.', 'Architecture image 2.', 'Architecture Collection', 'Photography', 'architecture/2.jpeg')">
+            <img src="architecture/2.jpeg" alt="Architecture 02">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Sharp edges in hostel.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Lets play basketball.', 'Architecture image 3.', 'Architecture Collection', 'Photography', 'architecture/3.jpeg')">
+            <img src="architecture/3.jpeg" alt="Architecture 03">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Lets play basketball.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Sham dhale us ek chokat par.', 'Architecture image 4.', 'Architecture Collection', 'Photography', 'architecture/4.jpeg')">
+            <img src="architecture/4.jpeg" alt="Architecture 04">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Sham dhale us ek chokat par.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Ramadan in Rehmat Masjid.', 'Architecture image 5.', 'Architecture Collection', 'Photography', 'architecture/5.jpeg')">
+            <img src="architecture/5.jpeg" alt="Architecture 05">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Ramadan in Rehmat Masjid.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Fast and furious.', 'Architecture image 6.', 'Architecture Collection', 'Photography', 'architecture/6.jpg')">
+            <img src="architecture/6.jpg" alt="Architecture 06">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Fast and furious.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Silence settles too soon in my life.', 'Architecture image 7.', 'Architecture Collection', 'Photography', 'architecture/7.jpg')">
+            <img src="architecture/7.jpg" alt="Architecture 07">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Silence settles too soon in my life.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Over-looking Rawalpindi.', 'Architecture image 8.', 'Architecture Collection', 'Photography', 'architecture/8.jpg')">
+            <img src="architecture/8.jpg" alt="Architecture 08">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Over-looking Rawalpindi.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('The Jinnah Avenue.', 'Architecture image 9.', 'Architecture Collection', 'Photography', 'architecture/9.jpg')">
+            <img src="architecture/9.jpg" alt="Architecture 09">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">The Jinnah Avenue.</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="architecture" onclick="openCosmosModal('Admin office from Amna.', 'Architecture image 10.', 'Architecture Collection', 'Photography', 'architecture/10.jpg')">
+            <img src="architecture/10.jpg" alt="Architecture 10">
+            <div class="grid-item-info">
+                <span class="item-label">Architecture</span>
+                <span class="item-title">Admin office from Amna.</span>
+            </div>
+        </div>
+
+        <!-- PEOPLE (11 items) -->
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 01', 'People collection image 01.', 'People Collection', 'Photography', 'People/1.jpeg', 'Archive 2025-2026')">
+            <img src="People/1.jpeg" alt="People 01">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">1</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 02', 'People collection image 02.', 'People Collection', 'Photography', 'People/2.jpeg', 'Archive 2025-2026')">
+            <img src="People/2.jpeg" alt="People 02">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">2</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 03', 'People collection image 03.', 'People Collection', 'Photography', 'People/3.jpeg', 'Archive 2025-2026')">
+            <img src="People/3.jpeg" alt="People 03">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">3</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 04', 'People collection image 04.', 'People Collection', 'Photography', 'People/4.jpeg', 'Archive 2025-2026')">
+            <img src="People/4.jpeg" alt="People 04">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">4</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 05', 'People collection image 05.', 'People Collection', 'Photography', 'People/5.jpeg', 'Archive 2025-2026')">
+            <img src="People/5.jpeg" alt="People 05">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">5</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 06', 'People collection image 06.', 'People Collection', 'Photography', 'People/6.jpeg', 'Archive 2025-2026')">
+            <img src="People/6.jpeg" alt="People 06">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">6</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 07', 'People collection image 07.', 'People Collection', 'Photography', 'People/7.jpeg', 'Archive 2025-2026')">
+            <img src="People/7.jpeg" alt="People 07">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">7</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 08', 'People collection image 08.', 'People Collection', 'Photography', 'People/8.jpeg', 'Archive 2025-2026')">
+            <img src="People/8.jpeg" alt="People 08">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">8</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 09', 'People collection image 09.', 'People Collection', 'Photography', 'People/9.jpeg', 'Archive 2025-2026')">
+            <img src="People/9.jpeg" alt="People 09">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">9</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 10', 'People collection image 10.', 'People Collection', 'Photography', 'People/10.jpeg', 'Archive 2025-2026')">
+            <img src="People/10.jpeg" alt="People 10">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">10</span>
+            </div>
+        </div>
+        <div class="grid-item" data-category="people" onclick="openCosmosModal('People 11', 'People collection image 11.', 'People Collection', 'Photography', 'People/11.jpeg', 'Archive 2025-2026')">
+            <img src="People/11.jpeg" alt="People 11">
+            <div class="grid-item-info">
+                <span class="item-label">People</span>
+                <span class="item-title">11</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal-overlay" id="cosmosModal">
+    <button class="close-btn" onclick="closeCosmosModal()">Close Esc</button>
+    <div class="modal-body">
+        <div class="modal-image-area">
+            <img src="" id="modalImg" alt="Preview Image">
+        </div>
+        <div class="modal-content-area">
+            <div class="modal-header">
+                <h2 id="modalTitle">Title</h2>
+                <div id="modalDesc" style="color: var(--cosmos-text-secondary); line-height: 1.8; font-size: 1rem; margin-top: 1rem;">
+                    Detailed preview of the artistic intent. This section will hold the story of why this image exists and which specific archive it belongs to.
+                </div>
+            </div>
+            
+            <div class="metadata-section">
+                <div class="meta-row">
+                    <span class="meta-key">Collection</span>
+                    <span class="meta-val" id="modalCollection">—</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Medium</span>
+                    <span class="meta-val" id="modalMedium">—</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Year/Status</span>
+                    <span class="meta-val" id="modalYearStatus">Archive 2024</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cursor Logic
+    const dot = document.getElementById('curDot');
+    const ring = document.getElementById('curRing');
+    document.addEventListener('mousemove', (e) => {
+        dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+        ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
+    });
+
+    // Modal Logic
+    function openCosmosModal(title, desc, collection, medium, imgSrc, yearStatus) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('modalCollection').innerText = collection;
+        document.getElementById('modalMedium').innerText = medium;
+        document.getElementById('modalImg').src = imgSrc;
+        document.getElementById('modalYearStatus').innerText = yearStatus || 'Archive 2024';
+        
+        const modal = document.getElementById('cosmosModal');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('open'), 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCosmosModal() {
+        const modal = document.getElementById('cosmosModal');
+        modal.classList.remove('open');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') closeCosmosModal();
+    });
+
+    // Hover Scaling for Cursor
+    const interactives = document.querySelectorAll('a, .grid-item, button');
+    interactives.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            ring.style.width = '60px';
+            ring.style.height = '60px';
+            ring.style.borderColor = 'rgba(255,255,255,0.4)';
+        });
+        el.addEventListener('mouseleave', () => {
+            ring.style.width = '30px';
+            ring.style.height = '30px';
+            ring.style.borderColor = 'rgba(255,255,255,0.2)';
+        });
+    });
+
+    // Category Filtering Logic
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const gridItems = document.querySelectorAll('.grid-item');
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update Active State
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filterValue = btn.getAttribute('data-filter');
+
+            gridItems.forEach(item => {
+                if (item.getAttribute('data-category') === filterValue) {
+                    item.classList.remove('hidden');
+                    item.style.display = 'block';
+                    // Trigger reflow for transition
+                    void item.offsetWidth;
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    item.classList.add('hidden');
+                    // Hide after transition
+                    setTimeout(() => {
+                        if (item.classList.contains('hidden')) {
+                            item.style.display = 'none';
+                        }
+                    }, 400);
+                }
+            });
+        });
+    });
+
+    // Initialize Nature as default
+    window.addEventListener('DOMContentLoaded', () => {
+        gridItems.forEach(item => {
+            if (item.getAttribute('data-category') !== 'nature') {
+                item.classList.add('hidden');
+                item.style.display = 'none';
+                item.style.opacity = '0';
+            } else {
+                item.classList.remove('hidden');
+                item.style.display = 'block';
+                item.style.opacity = '1';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

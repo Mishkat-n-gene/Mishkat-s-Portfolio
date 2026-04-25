@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mishkat Noor — Academic Coursework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+:root{
+  --sw:240px;
+  --bg:#f7f5f2;
+  --ink:#1c1917;
+  --mid:#6b6560;
+  --line:#ddd9d4;
+  --accent:#b5a48a;
+  --white:#ffffff;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Jost',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;display:flex;min-height:100vh;cursor:none}
+
+/* CURSOR */
+.cur-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-50%)}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(28,25,23,.4);border-radius:50%;position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+.cur-ring.big{width:56px;height:56px;border-color:var(--accent)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:100;padding:2.4rem 0;overflow-y:auto}
+.sidebar-name{font-family:var(--serif);font-size:1.05rem;font-weight:500;letter-spacing:.02em;color:var(--ink);text-decoration:none;padding:0 2rem 2rem;border-bottom:1px solid var(--line);display:block;line-height:1.35}
+.sidebar-name span{display:block;font-size:.62rem;font-family:var(--sans);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-top:.35rem}
+nav{padding:1.6rem 0;flex:1}
+nav a{display:block;padding:.55rem 2rem;font-size:.78rem;font-weight:400;letter-spacing:.03em;color:var(--mid);text-decoration:none;transition:color .25s,padding-left .25s;position:relative}
+nav a::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:0;height:1px;background:var(--accent);transition:width .3s}
+nav a:hover{color:var(--ink);padding-left:2.5rem}
+nav a:hover::before{width:1.5rem}
+nav a.active{color:var(--ink);font-weight:500}
+.sidebar-contact-btn{margin:0 2rem;display:block;text-align:center;padding:.7rem 1rem;border:1px solid var(--line);font-size:.65rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:background .3s,color .3s,border-color .3s;cursor:none;background:none;font-family:var(--sans)}
+.sidebar-contact-btn:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* MAIN CONTENT */
+.main{margin-left:var(--sw);flex:1;padding:4rem 5%;overflow-y:auto;position:relative;display:flex;flex-direction:column;align-items:center;background:transparent}
+
+/* ANIMATED BACKGROUND */
+#smoke-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:1}
+
+.content-header{margin-bottom:4rem;animation:fadeInDown .8s ease-out forwards;text-align:center;padding:1.8rem 3rem;border-radius:14px;background:rgba(0,0,0,0.7);position:relative;z-index:10}
+.content-header h1{font-family:var(--serif);font-size:3.5rem;font-weight:700;color:#ffffff;margin-bottom:0.35rem;letter-spacing:-0.02em;text-shadow:0 0 4px rgba(0,0,0,0.9),0 6px 24px rgba(0,0,0,1)}
+.content-header p{font-size:1.1rem;color:#ffffff;line-height:1.7;font-style:normal;font-weight:400;text-shadow:0 3px 14px rgba(0,0,0,0.9)}
+
+.coursework-container{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2.5rem;margin-bottom:4rem;padding:1.5rem 2rem;border-radius:12px;background:rgba(0,0,0,0.28);position:relative;z-index:5}
+
+.course-category{animation:fadeInUp .8s ease-out forwards}
+.course-category:nth-child(1){animation-delay:.3s}
+.course-category:nth-child(2){animation-delay:.4s}
+.course-category:nth-child(3){animation-delay:.5s}
+.course-category:nth-child(4){animation-delay:.6s}
+
+.course-category h2{font-family:var(--serif);font-size:1.4rem;font-weight:400;color:#ffffff;margin-bottom:1.5rem;position:relative;padding-bottom:0.8rem;text-align:center;text-shadow:0 1px 5px rgba(0,0,0,0.4)}
+
+.course-category h2::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40px;height:2px;background:linear-gradient(90deg,#fff8e7,transparent);animation:expandWidth .8s ease-out forwards}
+
+.course-list{list-style:none}
+.course-list li{font-size:0.95rem;color:#f0e8d8;line-height:1.8;margin-bottom:0.8rem;position:relative;padding-left:1.2rem;text-align:left;text-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.course-list li::before{content:'•';position:absolute;left:0;color:#fff8e7;font-weight:600;font-size:1.2rem}
+
+.course-list li:hover{color:#ffffff;transform:translateX(4px);transition:all .3s ease;text-shadow:0 2px 6px rgba(0,0,0,0.4)}
+
+.summary{max-width:850px;text-align:center;margin:3rem auto;padding:1.5rem 2.5rem;border-radius:10px;background:rgba(0,0,0,0.28);position:relative;z-index:5}
+.summary p{font-size:1.05rem;color:#f0e8d8;line-height:2;margin-bottom:1.5rem;animation:fadeIn .8s ease-out .7s both;text-shadow:0 1px 3px rgba(0,0,0,0.3)}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes expandWidth{from{width:0}to{width:40px}}
+@keyframes floatBoho{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-15px) rotate(5deg)}}
+@keyframes swayLeft{0%,100%{transform:translateX(0px)}50%{transform:translateX(-10px)}}
+@keyframes swayRight{0%,100%{transform:translateX(0px)}50%{transform:translateX(10px)}}
+@keyframes swayVine1{0%{transform:translateX(0px)}25%{transform:translateX(-8px)}50%{transform:translateX(0px)}75%{transform:translateX(8px)}100%{transform:translateX(0px)}}
+@keyframes swayVine2{0%{transform:translateX(0px)}25%{transform:translateX(8px)}50%{transform:translateX(0px)}75%{transform:translateX(-8px)}100%{transform:translateX(0px)}}
+@keyframes swayVine3{0%{transform:translateX(0px)}33%{transform:translateX(-6px)}66%{transform:translateX(6px)}100%{transform:translateX(0px)}}
+@keyframes swayVine4{0%{transform:translateX(0px)}33%{transform:translateX(7px)}66%{transform:translateX(-7px)}100%{transform:translateX(0px)}}
+
+/* BOHO DECORATIVE ELEMENTS */
+.boho-flower{position:absolute;pointer-events:none;opacity:0.6;animation:floatBoho 6s ease-in-out infinite}
+.boho-flower-small{width:40px;height:40px}
+.boho-flower-medium{width:60px;height:60px}
+.boho-flower-lg{width:80px;height:80px}
+.boho-vine{position:absolute;pointer-events:none;opacity:0.4}
+.winding-vine{opacity:0.35}
+.winding-vine-1{animation:swayVine1 7s ease-in-out infinite}
+.winding-vine-2{animation:swayVine2 8s ease-in-out infinite}
+.winding-vine-3{animation:swayVine3 7.5s ease-in-out infinite}
+.winding-vine-4{animation:swayVine4 8.5s ease-in-out infinite}
+
+.flower-1{top:10%;right:5%;animation:floatBoho 7s ease-in-out infinite;animation-delay:0s}
+.flower-2{top:25%;left:3%;animation:floatBoho 8s ease-in-out infinite;animation-delay:1s}
+.flower-3{top:50%;right:8%;animation:floatBoho 6.5s ease-in-out infinite;animation-delay:0.5s}
+.flower-4{top:65%;left:2%;animation:floatBoho 7.5s ease-in-out infinite;animation-delay:1.5s}
+.flower-5{top:80%;right:10%;animation:floatBoho 6s ease-in-out infinite;animation-delay:0.8s}
+.flower-6{top:35%;right:1%;animation:floatBoho 7s ease-in-out infinite;animation-delay:2s}
+.flower-7{top:55%;left:4%;animation:floatBoho 7.2s ease-in-out infinite;animation-delay:1.2s}
+.flower-8{top:75%;right:6%;animation:floatBoho 8.1s ease-in-out infinite;animation-delay:0.3s}
+
+.vine-1{top:15%;left:10%;animation:swayLeft 8s ease-in-out infinite;animation-delay:0s}
+.vine-2{top:50%;right:3%;animation:swayRight 9s ease-in-out infinite;animation-delay:1s}
+.vine-3{top:70%;left:5%;animation:swayLeft 7s ease-in-out infinite;animation-delay:0.5s}
+
+/* CONTACT PANEL */
+.contact-overlay{position:fixed;inset:0;background:rgba(10,8,6,.55);z-index:500;opacity:0;pointer-events:none;transition:opacity .45s;backdrop-filter:blur(4px)}
+.contact-overlay.open{opacity:1;pointer-events:all}
+.contact-panel{position:fixed;top:0;right:0;width:480px;max-width:100%;height:100vh;background:var(--white);z-index:501;padding:3.5rem 3rem;transform:translateX(100%);transition:transform .5s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.contact-panel.open{transform:translateX(0)}
+.contact-close{position:absolute;top:1.8rem;right:2rem;background:none;border:none;font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);cursor:none;transition:color .3s}
+.contact-close:hover{color:var(--ink)}
+.contact-heading{font-family:var(--serif);font-size:2.2rem;font-weight:400;color:var(--ink);line-height:1.15;margin-bottom:.7rem;margin-top:.5rem}
+.contact-heading em{font-style:italic;color:var(--accent)}
+.contact-sub{font-size:.82rem;color:var(--mid);margin-bottom:2.5rem;line-height:1.7}
+.contact-form{display:flex;flex-direction:column;gap:1.8rem;flex:1}
+.f-group{position:relative}
+.f-group label{display:block;font-size:.58rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem;transition:color .3s}
+.f-group:focus-within label{color:var(--ink)}
+.f-group input,.f-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:.55rem 0;font-family:var(--sans);font-size:.9rem;font-weight:300;color:var(--ink);outline:none;resize:none;transition:border-color .35s}
+.f-group input:focus,.f-group textarea:focus{border-bottom-color:var(--ink)}
+.f-line{position:absolute;bottom:0;left:0;height:1px;width:0;background:var(--ink);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.f-group:focus-within .f-line{width:100%}
+.contact-send{display:inline-flex;align-items:center;gap:.8rem;background:var(--ink);color:var(--white);border:none;padding:1rem 2rem;font-family:var(--sans);font-size:.65rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;cursor:none;align-self:flex-start;position:relative;overflow:hidden;transition:color .4s}
+.contact-send::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.contact-send:hover::before{transform:translateX(0)}
+.contact-send:hover{color:var(--ink)}
+.contact-send span,.contact-send .arr{position:relative;z-index:1}
+.contact-success{display:none;font-family:var(--serif);font-size:1.3rem;color:var(--ink);text-align:center;padding:2rem 0;font-style:italic}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:1.2rem;left:1.2rem;z-index:200;background:var(--white);border:1px solid var(--line);width:38px;height:38px;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:none;padding:9px}
+.hamburger span{display:block;width:100%;height:1px;background:var(--ink)}
+
+@media(max-width:860px){
+  body{cursor:auto}
+  .cur-dot,.cur-ring{display:none}
+  .sidebar{transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:300}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .main{margin-left:0;padding:2rem}
+  .content-header h1{font-size:2.2rem}
+  .coursework-container{grid-template-columns:1fr;gap:1.5rem}
+  .boho-flower{opacity:0.25}
+  .boho-vine{opacity:0.15}
+  .boho-flower-lg{width:60px;height:60px}
+  .boho-flower-medium{width:40px;height:40px}
+  .boho-flower-small{width:25px;height:25px}
+}
+</style>
+</head>
+<body>
+
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a class="sidebar-name" href="portfolio.html">
+    Mishkat Noor
+    <span>Portfolio</span>
+  </a>
+  <nav>
+    <a href="portfolio.html">Home</a>
+    <a href="about-me.html">About Me</a>
+    <a href="resume.html">Resume</a>
+  </nav>
+  <button class="sidebar-contact-btn" onclick="openContact()">Contact</button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <canvas id="smoke-canvas"></canvas>
+
+  <div class="content-header">
+    <h1>Academic Coursework</h1>
+    <p><em>36 subjects across CS, Life Sciences & Mathematics</em></p>
+  </div>
+
+  <div class="coursework-container">
+    <div class="course-category">
+      <h2>💻 Comp & Related</h2>
+      <ul class="course-list">
+        <li>Fundamentals of Programming</li>
+        <li>Digital Logic Design</li>
+        <li>Object Oriented Programming</li>
+        <li>Database Systems</li>
+        <li>Data Structures & Algorithms</li>
+        <li>Design Analysis of Algorithms</li>
+        <li>Artificial Intelligence</li>
+        <li>Computer Org & Assembly</li>
+        <li>Operating Systems</li>
+        <li>Computer Networks</li>
+        <li>Parallel & Distributed Computing</li>
+        <li>AI & Machine Learning</li>
+        <li>Software Engineering</li>
+        <li>Virtual Reality</li>
+      </ul>
+    </div>
+
+    <div class="course-category">
+      <h2>🧬 Life Sciences & BI</h2>
+      <ul class="course-list">
+        <li>Chemistry</li>
+        <li>Cell Biology</li>
+        <li>General Genetics</li>
+        <li>Evolutionary Biology</li>
+        <li>Intro to Bioinformatics</li>
+        <li>Next Gen Sequencing</li>
+        <li>Deep Learning in Life Sci</li>
+        <li>Special Topics in BI</li>
+      </ul>
+    </div>
+
+    <div class="course-category">
+      <h2>📐 Maths & Stats</h2>
+      <ul class="course-list">
+        <li>Calculus I</li>
+        <li>Multivariable Calculus</li>
+        <li>Linear Algebra</li>
+        <li>Discrete Mathematics</li>
+        <li>Probability & Statistics</li>
+      </ul>
+    </div>
+
+    <div class="course-category">
+      <h2>📚 Allied</h2>
+      <ul class="course-list">
+        <li>Intro to Management</li>
+        <li>Professional Ethics</li>
+        <li>Principles of Accounting</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="summary">
+    <p>Currently in my 6th semester of BS Bioinformatics at NUST, I've completed a rigorous interdisciplinary curriculum spanning <strong>36 subjects</strong>. This breadth of coursework reflects the true nature of bioinformatics — a field that demands proficiency across biology, computation, and quantitative analysis.</p>
+    <p>From designing algorithms to sequencing genomes, from managing databases to understanding cellular processes, each course has contributed to building a comprehensive foundation for research and innovation in computational biology.</p>
+  </div>
+
+</main>
+
+<!-- CONTACT PANEL -->
+<div class="contact-overlay" id="contactOverlay" onclick="closeContact()"></div>
+<div class="contact-panel" id="contactPanel">
+  <button class="contact-close" onclick="closeContact()">&#10005; &nbsp;Close</button>
+  <h2 class="contact-heading">Let's<br><em>talk.</em></h2>
+  <p class="contact-sub">I'm Mishkat Noor, a BS Bioinformatics student at NUST with expertise in NGS, genome assembly, and AI/ML in bioinformatics. Feel free to reach out using the form below or contact me directly at mnoor.bsbi23sines@student.nust.edu.pk or +(92) 341-7789421.</p>
+  <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+    <div class="f-group">
+      <label>Name *</label>
+      <input type="text" placeholder="Your full name" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Email *</label>
+      <input type="email" placeholder="mnoor.bsbi23sines@student.nust.edu.pk" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Message *</label>
+      <textarea rows="5" placeholder="What would you like to say?" required></textarea>
+      <div class="f-line"></div>
+    </div>
+    <button type="submit" class="contact-send">
+      <span>Send</span>
+      <span class="arr">&#8594;</span>
+    </button>
+  </form>
+  <div class="contact-success" id="contactSuccess">Message successfully sent! &#10003;</div>
+</div>
+
+<script>
+// CURSOR
+const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+});
+
+// CONTACT
+function openContact(){document.getElementById('contactOverlay').classList.add('open');document.getElementById('contactPanel').classList.add('open');document.body.style.overflow='hidden'}
+function closeContact(){document.getElementById('contactOverlay').classList.remove('open');document.getElementById('contactPanel').classList.remove('open');document.body.style.overflow=''}
+function submitContact(e){
+  e.preventDefault();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('contactSuccess').style.display='block';
+  setTimeout(()=>{document.getElementById('contactForm').style.display='flex';document.getElementById('contactSuccess').style.display='none';document.getElementById('contactForm').reset();closeContact()},3000);
+}
+
+// MOBILE
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',function(){
+    document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+
+// SMOKE ANIMATION
+const fragmentShaderSource=`#version 300 es
+precision highp float;
+out vec4 O;
+uniform float time;
+uniform vec2 resolution;
+uniform vec3 u_color;
+
+#define FC gl_FragCoord.xy
+#define R resolution
+#define T (time+660.)
+
+float rnd(vec2 p){p=fract(p*vec2(12.9898,78.233));p+=dot(p,p+34.56);return fract(p.x*p.y);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);return mix(mix(rnd(i),rnd(i+vec2(1,0)),u.x),mix(rnd(i+vec2(0,1)),rnd(i+1.),u.x),u.y);}
+float fbm(vec2 p){float t=.0,a=1.;for(int i=0;i<5;i++){t+=a*noise(p);p*=mat2(1,-1.2,.2,1.2)*2.;a*=.5;}return t;}
+
+void main(){
+  vec2 uv=(FC-.5*R)/R.y;
+  // slightly brighter base so smoke shapes read clearly
+  vec3 col=vec3(0.7,0.35,0.25);
+  uv.x+=.25;
+  uv*=vec2(2,1);
+
+  float n=fbm(uv*.28-vec2(T*.01,0));
+  n=noise(uv*3.+n*2.);
+
+  col.r-=fbm(uv+vec2(0,T*.015)+n);
+  col.g-=fbm(uv*1.003+vec2(0,T*.015)+n+.003);
+  col.b-=fbm(uv*1.006+vec2(0,T*.015)+n+.006);
+
+  col=mix(col,u_color,dot(col,vec3(.21,.71,.07)));
+
+  // keep darks rich but allow visible orange highlights
+  col=mix(vec3(.03,.015,.01),col,0.8);
+  col=clamp(col,.02,0.98);
+  O=vec4(col,1);
+}`;
+
+class SmokeRenderer{
+  constructor(canvas,fragmentSource,color=[0.7,0.6,0.85]){
+    this.canvas=canvas;
+    this.gl=canvas.getContext('webgl2');
+    this.vertices=[-1,1,-1,-1,1,1,1,-1];
+    this.color=color;
+    this.vertexSrc="#version 300 es\nprecision highp float;\nin vec4 position;\nvoid main(){gl_Position=position;}";
+    this.setup(fragmentSource);
+    this.init();
+  }
+  compile(shader,source){
+    this.gl.shaderSource(shader,source);
+    this.gl.compileShader(shader);
+    if(!this.gl.getShaderParameter(shader,this.gl.COMPILE_STATUS)){console.error('Shader error:',this.gl.getShaderInfoLog(shader));}
+  }
+  setup(fragmentSource){
+    const gl=this.gl;
+    this.vs=gl.createShader(gl.VERTEX_SHADER);
+    this.fs=gl.createShader(gl.FRAGMENT_SHADER);
+    this.program=gl.createProgram();
+    this.compile(this.vs,this.vertexSrc);
+    this.compile(this.fs,fragmentSource);
+    gl.attachShader(this.program,this.vs);
+    gl.attachShader(this.program,this.fs);
+    gl.linkProgram(this.program);
+    if(!gl.getProgramParameter(this.program,gl.LINK_STATUS)){console.error('Link error:',gl.getProgramInfoLog(this.program));}
+  }
+  init(){
+    const gl=this.gl;
+    this.buffer=gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(this.vertices),gl.STATIC_DRAW);
+    const position=gl.getAttribLocation(this.program,'position');
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
+    this.program.resolution=gl.getUniformLocation(this.program,'resolution');
+    this.program.time=gl.getUniformLocation(this.program,'time');
+    this.program.u_color=gl.getUniformLocation(this.program,'u_color');
+  }
+  updateScale(){
+    const dpr=Math.max(1,window.devicePixelRatio);
+    const w=window.innerWidth,h=window.innerHeight;
+    this.canvas.width=w*dpr;
+    this.canvas.height=h*dpr;
+    this.gl.viewport(0,0,this.canvas.width,this.canvas.height);
+  }
+  render(now=0){
+    const gl=this.gl;
+    gl.clearColor(0,0,0,1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(this.program);
+    gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+    gl.uniform2f(this.program.resolution,this.canvas.width,this.canvas.height);
+    gl.uniform1f(this.program.time,now*1e-3);
+    gl.uniform3fv(this.program.u_color,this.color);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+  }
+}
+
+const canvas=document.getElementById('smoke-canvas');
+// lighter, brighter orange for better visibility
+const renderer=new SmokeRenderer(canvas,fragmentShaderSource,[1.0,0.6,0.3]);
+renderer.updateScale();
+window.addEventListener('resize',()=>renderer.updateScale());
+let animId;
+const loop=now=>{renderer.render(now);animId=requestAnimationFrame(loop);};
+loop(0);
+</script>
+</body>
+</html>

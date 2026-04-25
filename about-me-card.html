@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mishkat Noor — Me and Bioinformatics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+:root{
+  --sw:240px;
+  --bg:#f7f5f2;
+  --ink:#1c1917;
+  --mid:#6b6560;
+  --line:#ddd9d4;
+  --accent:#b5a48a;
+  --white:#ffffff;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Jost',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;display:flex;min-height:100vh;cursor:none}
+
+/* CURSOR */
+.cur-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-50%)}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(28,25,23,.4);border-radius:50%;position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+.cur-ring.big{width:56px;height:56px;border-color:var(--accent)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:100;padding:2.4rem 0;overflow-y:auto}
+.sidebar-name{font-family:var(--serif);font-size:1.05rem;font-weight:500;letter-spacing:.02em;color:var(--ink);text-decoration:none;padding:0 2rem 2rem;border-bottom:1px solid var(--line);display:block;line-height:1.35}
+.sidebar-name span{display:block;font-size:.62rem;font-family:var(--sans);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-top:.35rem}
+nav{padding:1.6rem 0;flex:1}
+nav a{display:block;padding:.55rem 2rem;font-size:.78rem;font-weight:400;letter-spacing:.03em;color:var(--mid);text-decoration:none;transition:color .25s,padding-left .25s;position:relative}
+nav a::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:0;height:1px;background:var(--accent);transition:width .3s}
+nav a:hover{color:var(--ink);padding-left:2.5rem}
+nav a:hover::before{width:1.5rem}
+nav a.active{color:var(--ink);font-weight:500}
+.sidebar-contact-btn{margin:0 2rem;display:block;text-align:center;padding:.7rem 1rem;border:1px solid var(--line);font-size:.65rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:background .3s,color .3s,border-color .3s;cursor:none;background:none;font-family:var(--sans)}
+.sidebar-contact-btn:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* MAIN CONTENT */
+.main{margin-left:var(--sw);flex:1;padding:4rem 5%;overflow-y:auto;position:relative;display:flex;flex-direction:column;align-items:center}
+
+.content-header{margin-bottom:4rem;animation:fadeInDown .8s ease-out;text-align:center}
+.content-header h1{font-family:var(--serif);font-size:3.2rem;font-weight:400;color:var(--ink);margin-bottom:0.5rem;letter-spacing:-0.02em}
+.content-header p{font-size:1.1rem;color:var(--accent);line-height:1.6;font-style:italic;font-weight:500}
+
+.story-section{margin-bottom:3.5rem;max-width:850px;margin-left:auto;margin-right:auto}
+.story-section h2{font-family:var(--serif);font-size:2rem;font-weight:400;color:var(--ink);margin:3rem 0 1.5rem 0;position:relative;padding-bottom:1rem;animation:fadeInUp .8s ease-out .2s both;text-align:center}
+
+.story-section h2::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,var(--accent),transparent);animation:expandWidth .8s ease-out .4s both}
+
+.story-section p{font-size:1.05rem;color:var(--ink);line-height:2;margin-bottom:1.8rem;text-align:center;letter-spacing:0.3px;opacity:0;animation:fadeIn .8s ease-out forwards}
+
+.story-section p:nth-child(2){animation-delay:.3s}
+.story-section p:nth-child(3){animation-delay:.4s}
+.story-section p:nth-child(4){animation-delay:.5s}
+.story-section p:nth-child(5){animation-delay:.6s}
+.story-section p:nth-child(6){animation-delay:.7s}
+.story-section p:nth-child(7){animation-delay:.8s}
+.story-section p:nth-child(8){animation-delay:.9s}
+.story-section p:nth-child(9){animation-delay:1s}
+.story-section p:nth-child(10){animation-delay:1.1s}
+.story-section p:nth-child(11){animation-delay:1.2s}
+.story-section p:nth-child(12){animation-delay:1.3s}
+.story-section p:nth-child(13){animation-delay:1.4s}
+
+.story-section p:first-of-type::first-letter{font-size:2.8rem;font-family:var(--serif);color:var(--accent);font-weight:500;margin-right:0.2rem}
+
+.story-section em{font-style:italic;color:var(--accent);font-weight:500}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes expandWidth{from{width:0}to{width:60px}}
+
+/* BOHO DECORATIVE ELEMENTS */
+.boho-flower{position:absolute;pointer-events:none;opacity:0.6;animation:floatBoho 6s ease-in-out infinite}
+.boho-flower-small{width:40px;height:40px}
+.boho-flower-medium{width:60px;height:60px}
+.boho-flower-lg{width:80px;height:80px}
+.boho-vine{position:absolute;pointer-events:none;opacity:0.4}
+.winding-vine{opacity:0.35}
+.winding-vine-1{animation:swayVine1 7s ease-in-out infinite}
+.winding-vine-2{animation:swayVine2 8s ease-in-out infinite}
+.winding-vine-3{animation:swayVine3 7.5s ease-in-out infinite}
+.winding-vine-4{animation:swayVine4 8.5s ease-in-out infinite}
+
+@keyframes floatBoho{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-15px) rotate(5deg)}}
+@keyframes swayLeft{0%,100%{transform:translateX(0px)}50%{transform:translateX(-10px)}}
+@keyframes swayRight{0%,100%{transform:translateX(0px)}50%{transform:translateX(10px)}}
+@keyframes bloomIn{0%{transform:scale(0);opacity:0}50%{opacity:0.5}100%{transform:scale(1);opacity:0.6}}
+@keyframes swayVine1{0%{transform:translateX(0px)}25%{transform:translateX(-8px)}50%{transform:translateX(0px)}75%{transform:translateX(8px)}100%{transform:translateX(0px)}}
+@keyframes swayVine2{0%{transform:translateX(0px)}25%{transform:translateX(8px)}50%{transform:translateX(0px)}75%{transform:translateX(-8px)}100%{transform:translateX(0px)}}
+@keyframes swayVine3{0%{transform:translateX(0px)}33%{transform:translateX(-6px)}66%{transform:translateX(6px)}100%{transform:translateX(0px)}}
+@keyframes swayVine4{0%{transform:translateX(0px)}33%{transform:translateX(7px)}66%{transform:translateX(-7px)}100%{transform:translateX(0px)}}
+
+.flower-1{top:10%;right:5%;animation:floatBoho 7s ease-in-out infinite;animation-delay:0s}
+.flower-2{top:25%;left:3%;animation:floatBoho 8s ease-in-out infinite;animation-delay:1s}
+.flower-3{top:45%;right:8%;animation:floatBoho 6.5s ease-in-out infinite;animation-delay:0.5s}
+.flower-4{top:65%;left:2%;animation:floatBoho 7.5s ease-in-out infinite;animation-delay:1.5s}
+.flower-5{top:80%;right:10%;animation:floatBoho 6s ease-in-out infinite;animation-delay:0.8s}
+.flower-6{top:35%;right:1%;animation:floatBoho 7s ease-in-out infinite;animation-delay:2s}
+.flower-7{top:50%;left:4%;animation:floatBoho 7.2s ease-in-out infinite;animation-delay:1.2s}
+.flower-8{top:60%;right:6%;animation:floatBoho 8.1s ease-in-out infinite;animation-delay:0.3s}
+.flower-9{top:75%;left:8%;animation:floatBoho 6.8s ease-in-out infinite;animation-delay:2s}
+.flower-10{top:85%;right:5%;animation:floatBoho 7.5s ease-in-out infinite;animation-delay:1.8s}
+
+.vine-1{top:15%;left:10%;animation:swayLeft 8s ease-in-out infinite;animation-delay:0s}
+.vine-2{top:50%;right:3%;animation:swayRight 9s ease-in-out infinite;animation-delay:1s}
+.vine-3{top:70%;left:5%;animation:swayLeft 7s ease-in-out infinite;animation-delay:0.5s}
+
+/* CONTACT PANEL */
+.contact-overlay{position:fixed;inset:0;background:rgba(10,8,6,.55);z-index:500;opacity:0;pointer-events:none;transition:opacity .45s;backdrop-filter:blur(4px)}
+.contact-overlay.open{opacity:1;pointer-events:all}
+.contact-panel{position:fixed;top:0;right:0;width:480px;max-width:100%;height:100vh;background:var(--white);z-index:501;padding:3.5rem 3rem;transform:translateX(100%);transition:transform .5s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.contact-panel.open{transform:translateX(0)}
+.contact-close{position:absolute;top:1.8rem;right:2rem;background:none;border:none;font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);cursor:none;transition:color .3s}
+.contact-close:hover{color:var(--ink)}
+.contact-heading{font-family:var(--serif);font-size:2.2rem;font-weight:400;color:var(--ink);line-height:1.15;margin-bottom:.7rem;margin-top:.5rem}
+.contact-heading em{font-style:italic;color:var(--accent)}
+.contact-sub{font-size:.82rem;color:var(--mid);margin-bottom:2.5rem;line-height:1.7}
+.contact-form{display:flex;flex-direction:column;gap:1.8rem;flex:1}
+.f-group{position:relative}
+.f-group label{display:block;font-size:.58rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem;transition:color .3s}
+.f-group:focus-within label{color:var(--ink)}
+.f-group input,.f-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:.55rem 0;font-family:var(--sans);font-size:.9rem;font-weight:300;color:var(--ink);outline:none;resize:none;transition:border-color .35s}
+.f-group input:focus,.f-group textarea:focus{border-bottom-color:var(--ink)}
+.f-line{position:absolute;bottom:0;left:0;height:1px;width:0;background:var(--ink);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.f-group:focus-within .f-line{width:100%}
+.contact-send{display:inline-flex;align-items:center;gap:.8rem;background:var(--ink);color:var(--white);border:none;padding:1rem 2rem;font-family:var(--sans);font-size:.65rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;cursor:none;align-self:flex-start;position:relative;overflow:hidden;transition:color .4s}
+.contact-send::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.contact-send:hover::before{transform:translateX(0)}
+.contact-send:hover{color:var(--ink)}
+.contact-send span,.contact-send .arr{position:relative;z-index:1}
+.contact-success{display:none;font-family:var(--serif);font-size:1.3rem;color:var(--ink);text-align:center;padding:2rem 0;font-style:italic}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:1.2rem;left:1.2rem;z-index:200;background:var(--white);border:1px solid var(--line);width:38px;height:38px;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:none;padding:9px}
+.hamburger span{display:block;width:100%;height:1px;background:var(--ink)}
+
+@media(max-width:860px){
+  body{cursor:auto}
+  .cur-dot,.cur-ring{display:none}
+  .sidebar{transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:300}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .main{margin-left:0;padding:2rem}
+  .content-header h1{font-size:2.2rem}
+  .story-section h2{font-size:1.5rem}
+  .story-section p{font-size:0.95rem;line-height:1.8}
+  .boho-flower{opacity:0.25}
+  .boho-vine{opacity:0.15}
+  .winding-vine{opacity:0.2}
+  .boho-flower-lg{width:60px;height:60px}
+  .boho-flower-medium{width:40px;height:40px}
+  .boho-flower-small{width:25px;height:25px}
+  .winding-vine-1, .winding-vine-2, .winding-vine-3, .winding-vine-4{width:20px !important;height:300px !important}
+}
+</style>
+</head>
+<body>
+
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a class="sidebar-name" href="portfolio.html">
+    Mishkat Noor
+    <span>Portfolio</span>
+  </a>
+  <nav>
+    <a href="portfolio.html">Home</a>
+    <a href="about-me.html">About Me</a>
+    <a href="resume.html">Resume</a>
+  </nav>
+  <button class="sidebar-contact-btn" onclick="openContact()">Contact</button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <!-- BOHO DECORATIVE ELEMENTS -->
+  <!-- Flower 1 - Top Right -->
+  <svg class="boho-flower boho-flower-medium flower-1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="15" fill="#E8B4D8"/>
+    <circle cx="50" cy="25" r="12" fill="#F5C6E0"/>
+    <circle cx="72" cy="35" r="12" fill="#DEB5D0"/>
+    <circle cx="75" cy="60" r="12" fill="#F5C6E0"/>
+    <circle cx="65" cy="80" r="12" fill="#E8B4D8"/>
+    <circle cx="35" cy="80" r="12" fill="#DEB5D0"/>
+    <circle cx="25" cy="60" r="12" fill="#F5C6E0"/>
+    <circle cx="28" cy="35" r="12" fill="#E8B4D8"/>
+    <circle cx="50" cy="50" r="6" fill="#F8E5EE"/>
+  </svg>
+
+  <!-- Flower 2 - Left Upper -->
+  <svg class="boho-flower boho-flower-small flower-2" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="12" fill="#B8E5D8"/>
+    <circle cx="40" cy="20" r="9" fill="#C8F0E8"/>
+    <circle cx="58" cy="28" r="9" fill="#B8E5D8"/>
+    <circle cx="60" cy="45" r="9" fill="#C8F0E8"/>
+    <circle cx="50" cy="60" r="9" fill="#A0DED0"/>
+    <circle cx="30" cy="60" r="9" fill="#C8F0E8"/>
+    <circle cx="20" cy="45" r="9" fill="#B8E5D8"/>
+    <circle cx="22" cy="28" r="9" fill="#A0DED0"/>
+    <circle cx="40" cy="40" r="5" fill="#E8F8F5"/>
+  </svg>
+
+  <!-- Flower 3 - Right Middle -->
+  <svg class="boho-flower boho-flower-small flower-3" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="11" fill="#FFE8B8"/>
+    <circle cx="40" cy="22" r="8" fill="#FFF0D0"/>
+    <circle cx="55" cy="30" r="8" fill="#FFE8B8"/>
+    <circle cx="58" cy="46" r="8" fill="#FFF0D0"/>
+    <circle cx="48" cy="59" r="8" fill="#FFD9A0"/>
+    <circle cx="32" cy="59" r="8" fill="#FFF0D0"/>
+    <circle cx="22" cy="46" r="8" fill="#FFE8B8"/>
+    <circle cx="25" cy="30" r="8" fill="#FFD9A0"/>
+    <circle cx="40" cy="40" r="4" fill="#FFFBF0"/>
+  </svg>
+
+  <!-- Flower 4 - Left Lower -->
+  <svg class="boho-flower boho-flower-medium flower-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="14" fill="#D4C5F9"/>
+    <circle cx="50" cy="26" r="11" fill="#E6DDFF"/>
+    <circle cx="70" cy="36" r="11" fill="#D4C5F9"/>
+    <circle cx="72" cy="58" r="11" fill="#E6DDFF"/>
+    <circle cx="62" cy="78" r="11" fill="#C0AEFF"/>
+    <circle cx="38" cy="78" r="11" fill="#E6DDFF"/>
+    <circle cx="28" cy="58" r="11" fill="#D4C5F9"/>
+    <circle cx="30" cy="36" r="11" fill="#C0AEFF"/>
+    <circle cx="50" cy="50" r="5" fill="#F0EBFF"/>
+  </svg>
+
+  <!-- Flower 5 - Bottom Right -->
+  <svg class="boho-flower boho-flower-small flower-5" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="10" fill="#FFCFD8"/>
+    <circle cx="40" cy="23" r="7" fill="#FFE5EB"/>
+    <circle cx="54" cy="30" r="7" fill="#FFCFD8"/>
+    <circle cx="56" cy="45" r="7" fill="#FFE5EB"/>
+    <circle cx="47" cy="58" r="7" fill="#FFC0CE"/>
+    <circle cx="33" cy="58" r="7" fill="#FFE5EB"/>
+    <circle cx="24" cy="45" r="7" fill="#FFCFD8"/>
+    <circle cx="26" cy="30" r="7" fill="#FFC0CE"/>
+    <circle cx="40" cy="40" r="3" fill="#FFF5F8"/>
+  </svg>
+
+  <!-- Flower 6 - Right Upper -->
+  <svg class="boho-flower boho-flower-medium flower-6" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="13" fill="#C9E4F5"/>
+    <circle cx="50" cy="28" r="10" fill="#E0F2FF"/>
+    <circle cx="69" cy="37" r="10" fill="#C9E4F5"/>
+    <circle cx="70" cy="60" r="10" fill="#E0F2FF"/>
+    <circle cx="60" cy="77" r="10" fill="#B0D8F0"/>
+    <circle cx="40" cy="77" r="10" fill="#E0F2FF"/>
+    <circle cx="30" cy="60" r="10" fill="#C9E4F5"/>
+    <circle cx="31" cy="37" r="10" fill="#B0D8F0"/>
+    <circle cx="50" cy="50" r="4" fill="#F0F8FF"/>
+  </svg>
+
+  <!-- Flower 7 - Left Middle -->
+  <svg class="boho-flower boho-flower-small flower-7" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="10" fill="#FFE8B8"/>
+    <circle cx="40" cy="23" r="7" fill="#FFF0D0"/>
+    <circle cx="54" cy="30" r="7" fill="#FFE8B8"/>
+    <circle cx="56" cy="45" r="7" fill="#FFF0D0"/>
+    <circle cx="47" cy="58" r="7" fill="#FFD9A0"/>
+    <circle cx="33" cy="58" r="7" fill="#FFF0D0"/>
+    <circle cx="24" cy="45" r="7" fill="#FFE8B8"/>
+    <circle cx="26" cy="30" r="7" fill="#FFD9A0"/>
+    <circle cx="40" cy="40" r="4" fill="#FFFBF0"/>
+  </svg>
+
+  <!-- Flower 8 - Right Middle -->
+  <svg class="boho-flower boho-flower-medium flower-8" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="14" fill="#D4C5F9"/>
+    <circle cx="50" cy="26" r="11" fill="#E6DDFF"/>
+    <circle cx="70" cy="36" r="11" fill="#D4C5F9"/>
+    <circle cx="72" cy="58" r="11" fill="#E6DDFF"/>
+    <circle cx="62" cy="78" r="11" fill="#C0AEFF"/>
+    <circle cx="38" cy="78" r="11" fill="#E6DDFF"/>
+    <circle cx="28" cy="58" r="11" fill="#D4C5F9"/>
+    <circle cx="30" cy="36" r="11" fill="#C0AEFF"/>
+    <circle cx="50" cy="50" r="5" fill="#F0EBFF"/>
+  </svg>
+
+  <!-- Flower 9 - Left Lower -->
+  <svg class="boho-flower boho-flower-small flower-9" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="10" fill="#E8B4D8"/>
+    <circle cx="40" cy="23" r="7" fill="#F5C6E0"/>
+    <circle cx="54" cy="30" r="7" fill="#E8B4D8"/>
+    <circle cx="56" cy="45" r="7" fill="#F5C6E0"/>
+    <circle cx="47" cy="58" r="7" fill="#DEB5D0"/>
+    <circle cx="33" cy="58" r="7" fill="#F5C6E0"/>
+    <circle cx="24" cy="45" r="7" fill="#E8B4D8"/>
+    <circle cx="26" cy="30" r="7" fill="#DEB5D0"/>
+    <circle cx="40" cy="40" r="3" fill="#FFF5F8"/>
+  </svg>
+
+  <!-- Flower 10 - Right Lower -->
+  <svg class="boho-flower boho-flower-medium flower-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="13" fill="#B8E5D8"/>
+    <circle cx="50" cy="28" r="10" fill="#C8F0E8"/>
+    <circle cx="69" cy="37" r="10" fill="#B8E5D8"/>
+    <circle cx="70" cy="60" r="10" fill="#C8F0E8"/>
+    <circle cx="60" cy="77" r="10" fill="#A0DED0"/>
+    <circle cx="40" cy="77" r="10" fill="#C8F0E8"/>
+    <circle cx="30" cy="60" r="10" fill="#B8E5D8"/>
+    <circle cx="31" cy="37" r="10" fill="#A0DED0"/>
+    <circle cx="50" cy="50" r="4" fill="#E8F8F5"/>
+  </svg>
+
+  <!-- Vine 1 - Top Left -->
+  <svg class="boho-vine vine-1" viewBox="0 0 120 200" width="60" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 30 0 Q 20 30 25 60 Q 30 90 20 120 Q 15 150 28 180" stroke="#D4E8D4" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="30" cy="20" r="3" fill="#B0D8A0"/>
+    <circle cx="22" cy="50" r="3" fill="#C0DFB0"/>
+    <circle cx="28" cy="80" r="3" fill="#B0D8A0"/>
+    <circle cx="18" cy="110" r="3" fill="#C0DFB0"/>
+    <circle cx="25" cy="140" r="3" fill="#A0D090"/>
+  </svg>
+
+  <!-- Vine 2 - Right Middle -->
+  <svg class="boho-vine vine-2" viewBox="0 0 120 200" width="60" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 90 0 Q 100 35 95 70 Q 88 105 98 140 Q 105 170 90 200" stroke="#D8D4E8" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="88" cy="25" r="3" fill="#C0B0D8"/>
+    <circle cx="100" cy="55" r="3" fill="#D0C0E8"/>
+    <circle cx="92" cy="85" r="3" fill="#C0B0D8"/>
+    <circle cx="102" cy="120" r="3" fill="#D0C0E8"/>
+    <circle cx="92" cy="160" r="3" fill="#B0A0C8"/>
+  </svg>
+
+  <!-- Vine 3 - Left Lower -->
+  <svg class="boho-vine vine-3" viewBox="0 0 120 200" width="60" height="120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 35 0 Q 22 40 30 80 Q 38 120 25 160 Q 18 180 32 200" stroke="#E8D8C0" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="34" cy="20" r="3" fill="#D8C0A0"/>
+    <circle cx="25" cy="60" r="3" fill="#E8D8B0"/>
+    <circle cx="32" cy="95" r="3" fill="#D8C0A0"/>
+    <circle cx="22" cy="135" r="3" fill="#E8D8B0"/>
+    <circle cx="30" cy="175" r="3" fill="#C8B090"/>
+  </svg>
+
+  <!-- WINDING GREEN VINES -->
+  <!-- Winding Vine 1 - Full Page Left Side -->
+  <svg class="boho-vine winding-vine winding-vine-1" viewBox="0 0 80 400" width="40" height="400" xmlns="http://www.w3.org/2000/svg" style="left: 2%; top: 0;">
+    <path d="M 40 0 Q 20 40 30 80 Q 50 120 25 160 Q 10 200 35 240 Q 55 280 28 320 Q 12 360 40 400" stroke="#8FBB8F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="15" r="2.5" fill="#6BA06B"/>
+    <circle cx="28" cy="50" r="2.5" fill="#7AB57A"/>
+    <circle cx="48" cy="90" r="2.5" fill="#6BA06B"/>
+    <circle cx="20" cy="130" r="2.5" fill="#7AB57A"/>
+    <circle cx="38" cy="170" r="2.5" fill="#6BA06B"/>
+    <circle cx="18" cy="210" r="2.5" fill="#7AB57A"/>
+    <circle cx="48" cy="250" r="2.5" fill="#6BA06B"/>
+    <circle cx="22" cy="290" r="2.5" fill="#7AB57A"/>
+    <circle cx="42" cy="330" r="2.5" fill="#6BA06B"/>
+    <circle cx="32" cy="370" r="2.5" fill="#7AB57A"/>
+  </svg>
+
+  <!-- Winding Vine 2 - Right Side -->
+  <svg class="boho-vine winding-vine winding-vine-2" viewBox="0 0 80 400" width="40" height="400" xmlns="http://www.w3.org/2000/svg" style="right: 3%; top: 50px;">
+    <path d="M 40 0 Q 60 45 50 90 Q 28 135 52 180 Q 70 225 42 270 Q 18 315 50 360" stroke="#A8D5A8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="20" r="2.5" fill="#7AB57A"/>
+    <circle cx="55" cy="65" r="2.5" fill="#8FBB8F"/>
+    <circle cx="48" cy="110" r="2.5" fill="#7AB57A"/>
+    <circle cx="32" cy="155" r="2.5" fill="#8FBB8F"/>
+    <circle cx="56" cy="200" r="2.5" fill="#7AB57A"/>
+    <circle cx="38" cy="245" r="2.5" fill="#8FBB8F"/>
+    <circle cx="28" cy="290" r="2.5" fill="#7AB57A"/>
+    <circle cx="52" cy="330" r="2.5" fill="#8FBB8F"/>
+  </svg>
+
+  <!-- Winding Vine 3 - Left Center -->
+  <svg class="boho-vine winding-vine winding-vine-3" viewBox="0 0 80 300" width="35" height="300" xmlns="http://www.w3.org/2000/svg" style="left: 0%; top: 200px;">
+    <path d="M 40 0 Q 15 35 32 70 Q 55 105 25 140 Q 8 175 40 210 Q 65 245 35 280" stroke="#7AB57A" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="15" r="2" fill="#5A8A5A"/>
+    <circle cx="30" cy="55" r="2" fill="#6BA06B"/>
+    <circle cx="50" cy="85" r="2" fill="#5A8A5A"/>
+    <circle cx="22" cy="120" r="2" fill="#6BA06B"/>
+    <circle cx="38" cy="160" r="2" fill="#5A8A5A"/>
+    <circle cx="60" cy="195" r="2" fill="#6BA06B"/>
+    <circle cx="28" cy="240" r="2" fill="#5A8A5A"/>
+    <circle cx="42" cy="280" r="2" fill="#6BA06B"/>
+  </svg>
+
+  <!-- Winding Vine 4 - Right Upper Corner -->
+  <svg class="boho-vine winding-vine winding-vine-4" viewBox="0 0 80 250" width="40" height="250" xmlns="http://www.w3.org/2000/svg" style="right: 1%; top: -10px;">
+    <path d="M 40 0 Q 65 40 48 80 Q 20 120 55 160 Q 75 195 45 240" stroke="#9FC99F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="15" r="2.5" fill="#7AB57A"/>
+    <circle cx="60" cy="55" r="2.5" fill="#8FBB8F"/>
+    <circle cx="45" cy="95" r="2.5" fill="#7AB57A"/>
+    <circle cx="25" cy="135" r="2.5" fill="#8FBB8F"/>
+    <circle cx="58" cy="175" r="2.5" fill="#7AB57A"/>
+    <circle cx="48" cy="225" r="2.5" fill="#8FBB8F"/>
+  </svg>
+
+  <div class="content-header">
+    <h1>About Me</h1>
+    <p><em>Made for it!</em></p>
+  </div>
+
+  <div class="story-section">
+    <h2>Me and Bioinformatics</h2>
+    
+    <p>
+      Back in 2019 when Covid-19 hit the world, I was dazed — how could something as small and minute as a virus make as big an organism as a human fall sick to the point of death? What sort of machinery could a not-quite-living organism like a virus possibly possess? It fascinated me, it frightened me — a 16-year-old girl merely doing her matriculation.
+    </p>
+
+    <p>
+      Then in 2020, I contracted the virus twice, with a gap of six months. The same symptoms both times: losing my taste, smell, and hearing to a certain extent. In quarantine, I researched everything I could, read the daily news on websites about a cure for this epidemic, and fueled by my brain and a lifelong fascination with Sci-Fi movies, I built a deeper interest in biological molecules and their capacity to create — and break — the world.
+    </p>
+
+    <p>
+      This was when I learnt about <strong>Bioinformatics</strong>. The interdisciplinary field born at the synergy of Biology and the core principles of a whole lot of Mathematics. Previously, back in 2017, one of my very dearest aunts had died of breast cancer. By then I had plans of becoming a doctor, yet I never stopped imagining doing further research in the cancer domain — and cancer, surprisingly, is a very integral area of study in Bioinformatics today. Then to Covid, I lost yet another aunt. To say the least, this took a deep toll on me, and only strengthened my desire to research and provide better, more accessible solutions that are not only effective but within reach of the everyday person. Mentioning at the very end, the biggest loss of my life was losing my mother early in life to a heart disease. Diseases, they intrigued me, they still do! And what better closure is there to study, research and build for the betterment of humanity! Just so our loved ones are saved.
+    </p>
+
+    <p>
+      Driven by my personal experiences, I fought my way into the <strong>School of Interdisciplinary Engineering and Sciences (SINES) at the National University of Science and Technology (NUST)</strong>. With little to no information about the NUST Entry Test, I survived a highly competitive selection — and I was proud of it! But pursuing my dream of becoming a Bioinformatics scientist was not easy either. In a culture where only certain professions like medicine are placed at the top of the job-security hierarchy, my father did not agree to let me pursue my dreams. I sat my competency exams, studied hard, and after one year into my degree — plus a whole lot of persuasion — my father finally agreed to let me be.
+    </p>
+
+    <p>
+      <strong>Choosing Bioinformatics has been, so far, one of the best decisions of my life.</strong> It felt as if I was made for it. Imagine studying 36 subjects, none quite like the other — I have studied more in this one degree than I ever thought possible. It has proven that not only is knowledge a privilege, but fighting for your dreams is absolutely worth it. Studying Mathematics and Chemistry alongside Computer Science and Biology? That would have sounded absolutely crazy to elementary-school me. I may have been overwhelmed at times, but oh, the ride is so worth it!
+    </p>
+  </div>
+
+  <div class="story-section">
+    <h2>The Pursuit of Passions and Progression</h2>
+
+    <p>
+      Passions, to me, have always been widely associated with the <strong>arts</strong>. I do consider myself a jack of all trades and a master of absolutely none of them — and I wear that title proudly, because I have dipped my hand into several different forms of art and loved every single one.
+    </p>
+
+    <p>
+      I was 13 when I started writing <strong>poems</strong>. Driven by personal pain, it was perhaps a little dark for a teenager to write in such dreadfully raw and aching words — but I continued, and just like the seasons of my life, my words kept changing, growing, and finding new colours.
+    </p>
+
+    <p>
+      I sketch, paint, and draw portraits, because holding a pencil in my hand, giving a stroke of brush on canvas has always grounded me — brought me closest to my truest self. There is something almost meditative about it, a quiet conversation between my hand and my heart.
+    </p>
+
+    <p>
+      Then there is storytelling, and for that I picked up <strong>filmmaking</strong> — small projects, one at a time. Through lighting, I discovered I could relay feelings without uttering a single word. How one person stepping out of an elevator can tell you everything about their mood just by the way they walk. How moving a character from darkness into light whispers to the audience that they are reaching for hope and peace. It is a silent language, and I fell in love with it.
+    </p>
+
+    <p>
+      Still life found me through my camera — a Canon — where my photography journey first began. I eventually moved on to digicam editing, and ever since, I have made it entirely my own.
+    </p>
+
+    <p>
+      And then there is embroidery — perhaps the most soulful of them all. It connects me to my ancestors in the most tender way. In Hindko tradition, women gather in a circle after finishing their morning tasks, pick up their wooden embroidery frames, and breathe life into motifs of Balochi embroidery — stitching clothes, weaving stories, and turning thread into art. Every time I pick up a needle, I feel that circle around me still.
+    </p>
+
+    <p>
+      Then there is the art of playing with fire — <strong>cooking</strong>, and the delicate practice of pouring soul into food. I would not be me without my deep, almost reverent love for cultural food. There is something deeply intimate about the way a dish carries an entire civilization within it — the spices, the technique, the memory baked into every bite. Food, to me, is never just sustenance. It is story. It is identity. It is love made edible.
+    </p>
+
+    <p>
+      And the questions food raises are endlessly delicious. Why are noodles the same dish and yet entirely different around the world? From the ramen steaming in a Tokyo alley, to the thukpa warming a Tibetan morning, to the pasta twirling on a Roman fork, to the chow mein sizzling in a Cantonese wok — the same humble strand of dough tells a thousand different stories depending on whose hands shaped it and whose history seasoned it. That single question alone could keep me reading for years.
+    </p>
+
+    <p>
+      Or consider how <strong>Filipino and Mexican cuisines share flavours so striking, so familiar to one another,</strong> that it stops you mid-bite. And then you learn about the Manila Galleon trade route — centuries of exchange between the Philippines and Mexico — and suddenly the similarities are not a coincidence, they are a conversation that has been going on for four hundred years. That is the magic of food. It remembers even when history books forget.
+    </p>
+
+    <p>
+      Fusion cuisines fascinate me for exactly this reason — because underneath every fusion dish, if you trace it far enough back, you find a meeting of peoples, a collision of worlds, a moment in history where two cultures looked at each other's tables and said yes, this too belongs to us now. Food does not colonise — it connects.
+    </p>
+
+    <p>
+      And that love for story naturally spills into <strong>Anthropology</strong> — because what is humanity, if not the greatest story ever told? The cradle of Mesopotamia, the grandeur of Muslim history, the vast and layered depths of Asian civilisations, the rise and fall of the world's greatest empires, and the pulse of contemporary history still beating loudly around us — it fascinates me to no end.
+    </p>
+
+    <p>
+      What captivates me most is people — their races, their regions, their rituals, and the invisible threads that connect them across centuries and continents. How borders are drawn on maps but cultures bleed beautifully into one another regardless. How every civilisation, no matter how ancient or modern, has looked up at the same sky and tried to make meaning of it.
+    </p>
+
+    <p>
+      People are, without a doubt, the most fascinating subject I have ever studied — and I have studied quite a few.
+    </p>
+  </div>
+
+</main>
+
+<!-- CONTACT PANEL -->
+<div class="contact-overlay" id="contactOverlay" onclick="closeContact()"></div>
+<div class="contact-panel" id="contactPanel">
+  <button class="contact-close" onclick="closeContact()">&#10005; &nbsp;Close</button>
+  <h2 class="contact-heading">Let's<br><em>talk.</em></h2>
+  <p class="contact-sub">I'm Mishkat Noor, a BS Bioinformatics student at NUST with expertise in NGS, genome assembly, and AI/ML in bioinformatics. Feel free to reach out using the form below or contact me directly at mnoor.bsbi23sines@student.nust.edu.pk or +(92) 341-7789421.</p>
+  <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+    <div class="f-group">
+      <label>Name *</label>
+      <input type="text" placeholder="Your full name" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Email *</label>
+      <input type="email" placeholder="mnoor.bsbi23sines@student.nust.edu.pk" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Message *</label>
+      <textarea rows="5" placeholder="What would you like to say?" required></textarea>
+      <div class="f-line"></div>
+    </div>
+    <button type="submit" class="contact-send">
+      <span>Send</span>
+      <span class="arr">&#8594;</span>
+    </button>
+  </form>
+  <div class="contact-success" id="contactSuccess">Message successfully sent! &#10003;</div>
+</div>
+
+<script>
+// CURSOR
+const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+});
+
+// CONTACT
+function openContact(){document.getElementById('contactOverlay').classList.add('open');document.getElementById('contactPanel').classList.add('open');document.body.style.overflow='hidden'}
+function closeContact(){document.getElementById('contactOverlay').classList.remove('open');document.getElementById('contactPanel').classList.remove('open');document.body.style.overflow=''}
+function submitContact(e){
+  e.preventDefault();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('contactSuccess').style.display='block';
+  setTimeout(()=>{document.getElementById('contactForm').style.display='flex';document.getElementById('contactSuccess').style.display='none';document.getElementById('contactForm').reset();closeContact()},3000);
+}
+
+// MOBILE
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',function(){
+    document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

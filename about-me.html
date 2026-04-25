@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mishkat Noor — About Me</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+:root{
+  --sw:240px;
+  --bg:#f7f5f2;
+  --ink:#1c1917;
+  --mid:#6b6560;
+  --line:#ddd9d4;
+  --accent:#b5a48a;
+  --white:#ffffff;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Jost',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;display:flex;min-height:100vh;cursor:none}
+
+/* CURSOR */
+.cur-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,-50%)}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(28,25,23,.4);border-radius:50%;position:fixed;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+.cur-ring.big{width:56px;height:56px;border-color:var(--accent)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:100;padding:2.4rem 0;overflow-y:auto}
+.sidebar-name{font-family:var(--serif);font-size:1.05rem;font-weight:500;letter-spacing:.02em;color:var(--ink);text-decoration:none;padding:0 2rem 2rem;border-bottom:1px solid var(--line);display:block;line-height:1.35}
+.sidebar-name span{display:block;font-size:.62rem;font-family:var(--sans);font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-top:.35rem}
+nav{padding:1.6rem 0;flex:1}
+nav a{display:block;padding:.55rem 2rem;font-size:.78rem;font-weight:400;letter-spacing:.03em;color:var(--mid);text-decoration:none;transition:color .25s,padding-left .25s;position:relative}
+nav a::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:0;height:1px;background:var(--accent);transition:width .3s}
+nav a:hover{color:var(--ink);padding-left:2.5rem}
+nav a:hover::before{width:1.5rem}
+nav a.active{color:var(--ink);font-weight:500}
+.sidebar-contact-btn{margin:0 2rem;display:block;text-align:center;padding:.7rem 1rem;border:1px solid var(--line);font-size:.65rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);text-decoration:none;transition:background .3s,color .3s,border-color .3s;cursor:none;background:none;font-family:var(--sans)}
+.sidebar-contact-btn:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* MAIN CONTENT */
+.main{margin-left:var(--sw);flex:1;padding:3rem;overflow-y:auto}
+.content-header{margin-bottom:3rem}
+.content-header h1{font-family:var(--serif);font-size:2.8rem;font-weight:400;color:var(--ink);margin-bottom:1rem}
+.content-header p{font-size:1rem;color:var(--mid);line-height:1.8;max-width:90%}
+
+.about-section{margin-bottom:2.5rem}
+.about-section h2{font-family:var(--serif);font-size:1.8rem;font-weight:400;color:var(--ink);margin-bottom:1rem;border-bottom:1px solid var(--line);padding-bottom:0.5rem}
+.about-section p{font-size:0.95rem;color:var(--ink);line-height:1.8;margin-bottom:1rem}
+.about-section ul{margin-left:2rem;margin-bottom:1rem}
+.about-section li{font-size:0.95rem;color:var(--ink);line-height:1.8;margin-bottom:0.5rem}
+
+/* CONTACT PANEL */
+.contact-overlay{position:fixed;inset:0;background:rgba(10,8,6,.55);z-index:500;opacity:0;pointer-events:none;transition:opacity .45s;backdrop-filter:blur(4px)}
+.contact-overlay.open{opacity:1;pointer-events:all}
+.contact-panel{position:fixed;top:0;right:0;width:480px;max-width:100%;height:100vh;background:var(--white);z-index:501;padding:3.5rem 3rem;transform:translateX(100%);transition:transform .5s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.contact-panel.open{transform:translateX(0)}
+.contact-close{position:absolute;top:1.8rem;right:2rem;background:none;border:none;font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);cursor:none;transition:color .3s}
+.contact-close:hover{color:var(--ink)}
+.contact-heading{font-family:var(--serif);font-size:2.2rem;font-weight:400;color:var(--ink);line-height:1.15;margin-bottom:.7rem;margin-top:.5rem}
+.contact-heading em{font-style:italic;color:var(--accent)}
+.contact-sub{font-size:.82rem;color:var(--mid);margin-bottom:2.5rem;line-height:1.7}
+.contact-form{display:flex;flex-direction:column;gap:1.8rem;flex:1}
+.f-group{position:relative}
+.f-group label{display:block;font-size:.58rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem;transition:color .3s}
+.f-group:focus-within label{color:var(--ink)}
+.f-group input,.f-group textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:.55rem 0;font-family:var(--sans);font-size:.9rem;font-weight:300;color:var(--ink);outline:none;resize:none;transition:border-color .35s}
+.f-group input:focus,.f-group textarea:focus{border-bottom-color:var(--ink)}
+.f-line{position:absolute;bottom:0;left:0;height:1px;width:0;background:var(--ink);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.f-group:focus-within .f-line{width:100%}
+.contact-send{display:inline-flex;align-items:center;gap:.8rem;background:var(--ink);color:var(--white);border:none;padding:1rem 2rem;font-family:var(--sans);font-size:.65rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;cursor:none;align-self:flex-start;position:relative;overflow:hidden;transition:color .4s}
+.contact-send::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.contact-send:hover::before{transform:translateX(0)}
+.contact-send:hover{color:var(--ink)}
+.contact-send span,.contact-send .arr{position:relative;z-index:1}
+.contact-success{display:none;font-family:var(--serif);font-size:1.3rem;color:var(--ink);text-align:center;padding:2rem 0;font-style:italic}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:1.2rem;left:1.2rem;z-index:200;background:var(--white);border:1px solid var(--line);width:38px;height:38px;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:none;padding:9px}
+.hamburger span{display:block;width:100%;height:1px;background:var(--ink)}
+
+@media(max-width:860px){
+  body{cursor:auto}
+  .cur-dot,.cur-ring{display:none}
+  .sidebar{transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:300}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .main{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a class="sidebar-name" href="portfolio.html">
+    Mishkat Noor
+    <span>Portfolio</span>
+  </a>
+  <nav>
+    <a href="portfolio.html">Home</a>
+    <a href="about-me.html" class="active">About Me</a>
+    <a href="resume.html">Resume</a>
+  </nav>
+  <button class="sidebar-contact-btn" onclick="openContact()">Contact</button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <div class="content-header">
+    <h1>About Me</h1>
+    <p>My journey in bioinformatics and computational biology</p>
+  </div>
+
+  <div class="about-section">
+    <h2>Who I Am</h2>
+    <p>
+      I'm Mishkat Noor, a BS Bioinformatics student at the National University of Science and Technology (NUST), currently in my final year of studies. My work is driven by the synergy between computational science and biology, with a specific focus on developing pragmatic solutions for the medical field.
+    </p>
+  </div>
+
+  <div class="about-section">
+    <h2>My Passion</h2>
+    <p>
+      I'm particularly interested in advancing the scope of neuro-bioinformatics by leveraging artificial intelligence and machine learning to interpret complex biological data. Beyond my technical pursuits, I'm committed to refining my scientific communication through rigorous research and peer-reviewed publications, ensuring that my approach to bioinformatics remains both creative and methodologically sound.
+    </p>
+  </div>
+
+  <div class="about-section">
+    <h2>My Background</h2>
+    <p>
+      With a strong foundation in molecular biology, genetics, and computational methods, I've developed expertise in:
+    </p>
+    <ul>
+      <li>Next-Generation Sequencing (NGS) and long-read genomics</li>
+      <li>High-Performance Computing and workflow orchestration (Nextflow, SLURM)</li>
+      <li>Variant calling and genome assembly pipelines</li>
+      <li>AI and Machine Learning applications in bioinformatics</li>
+      <li>Computational epidemiology and pandemic forecasting</li>
+      <li>Molecular dynamics and structural bioinformatics</li>
+    </ul>
+  </div>
+
+  <div class="about-section">
+    <h2>Beyond Academia</h2>
+    <p>
+      When I'm not working on bioinformatics projects, I'm passionate about storytelling, visual arts (charcoals and canvas), embroidery, and filmmaking. These creative pursuits complement my scientific work and help me develop unique perspectives on problem-solving. I actively participate in leadership roles at NUST, including my work as Deputy Director of Social Media Management for NUST Social Values Society and Director of Publications for the NUST Quiz Club.
+    </p>
+  </div>
+
+</main>
+
+<!-- CONTACT PANEL -->
+<div class="contact-overlay" id="contactOverlay" onclick="closeContact()"></div>
+<div class="contact-panel" id="contactPanel">
+  <button class="contact-close" onclick="closeContact()">&#10005; &nbsp;Close</button>
+  <h2 class="contact-heading">Let's<br><em>talk.</em></h2>
+  <p class="contact-sub">I'm Mishkat Noor, a BS Bioinformatics student at NUST with expertise in NGS, genome assembly, and AI/ML in bioinformatics. Feel free to reach out using the form below or contact me directly at mnoor.bsbi23sines@student.nust.edu.pk or +(92) 341-7789421.</p>
+  <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+    <div class="f-group">
+      <label>Name *</label>
+      <input type="text" placeholder="Your full name" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Email *</label>
+      <input type="email" placeholder="mnoor.bsbi23sines@student.nust.edu.pk" required>
+      <div class="f-line"></div>
+    </div>
+    <div class="f-group">
+      <label>Message *</label>
+      <textarea rows="5" placeholder="What would you like to say?" required></textarea>
+      <div class="f-line"></div>
+    </div>
+    <button type="submit" class="contact-send">
+      <span>Send</span>
+      <span class="arr">&#8594;</span>
+    </button>
+  </form>
+  <div class="contact-success" id="contactSuccess">Message successfully sent! &#10003;</div>
+</div>
+
+<script>
+// CURSOR
+const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+});
+
+// CONTACT
+function openContact(){document.getElementById('contactOverlay').classList.add('open');document.getElementById('contactPanel').classList.add('open');document.body.style.overflow='hidden'}
+function closeContact(){document.getElementById('contactOverlay').classList.remove('open');document.getElementById('contactPanel').classList.remove('open');document.body.style.overflow=''}
+function submitContact(e){
+  e.preventDefault();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('contactSuccess').style.display='block';
+  setTimeout(()=>{document.getElementById('contactForm').style.display='flex';document.getElementById('contactSuccess').style.display='none';document.getElementById('contactForm').reset();closeContact()},3000);
+}
+
+// MOBILE
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+document.querySelectorAll('nav a').forEach(a=>{
+  a.addEventListener('click',function(){
+    document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
